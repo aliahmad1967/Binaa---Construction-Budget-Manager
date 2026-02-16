@@ -11,10 +11,12 @@ export interface Transaction {
   id: string;
   title: string;
   date: string;
-  category: string;
   amount: number;
+  category: string; // مثل: مواد بناء، أجور، نقل
+  material?: string; // اسم المادة: طابوق، حديد...
+  recipient?: string; // الشخص المستلم
+  stageId: string;
   icon: string;
-  type: 'expense' | 'income';
 }
 
 export interface ConstructionStage {
@@ -32,6 +34,8 @@ export interface Payment {
   title: string;
   date: string;
   amount: number;
+  material?: string;
+  recipient?: string;
   icon: string;
   color: string;
 }

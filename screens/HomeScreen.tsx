@@ -2,17 +2,16 @@
 import React from 'react';
 import { Screen, ConstructionStage } from '../types';
 
-const STAGES: ConstructionStage[] = [
-  { id: 'foundation', name: 'مرحلة الأساس', status: 'completed', spent: 15000000, planned: 15000000, icon: 'foundation', color: 'blue' },
-  { id: 'structure', name: 'مرحلة الهيكل', status: 'in-progress', spent: 30000000, planned: 40000000, icon: 'weekend', color: 'orange' },
-  { id: 'finishing', name: 'مرحلة الإنهاءات', status: 'not-started', spent: 0, planned: 45000000, icon: 'palette', color: 'purple' },
-];
-
 interface Props {
   onNavigate: (screen: Screen, params?: any) => void;
+  stages: ConstructionStage[];
 }
 
-const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
+const HomeScreen: React.FC<Props> = ({ onNavigate, stages }) => {
+  const totalSpent = stages.reduce((acc, s) => acc + s.spent, 0);
+  const totalPlanned = stages.reduce((acc, s) => acc + s.planned, 0);
+  const progressPercent = Math.round((totalSpent / totalPlanned) * 100);
+
   return (
     <div className="px-6 pt-12 animate-in fade-in duration-500">
       <header className="flex items-center justify-between mb-8">
@@ -30,19 +29,19 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
       <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-50 mb-8 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="relative z-10">
-          <p className="text-text-muted text-sm font-medium mb-1">الميزانية الكلية</p>
+          <p className="text-text-muted text-sm font-medium mb-1">الميزانية الكلية للمشروع</p>
           <h2 className="text-3xl font-bold text-text-main mb-6">
-            ١٠٠,٠٠٠,٠٠٠ <span className="text-lg font-medium text-text-muted">د.ع</span>
+            {totalPlanned.toLocaleString()} <span className="text-lg font-medium text-text-muted">د.ع</span>
           </h2>
 
           <div className="space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between text-sm font-medium">
                 <span className="text-text-main">نسبة الإنجاز المالي</span>
-                <span className="text-primary font-bold">٤٥٪</span>
+                <span className="text-primary font-bold">{progressPercent}%</span>
               </div>
               <div className="h-3.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: '45%' }}></div>
+                <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: `${progressPercent}%` }}></div>
               </div>
             </div>
 
@@ -52,7 +51,7 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
                   <span className="material-symbols-outlined text-base">arrow_outward</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider">المصروف</span>
                 </div>
-                <p className="text-lg font-bold text-text-main leading-none">٤٥,٠٠٠,٠٠٠</p>
+                <p className="text-lg font-bold text-text-main leading-none">{totalSpent.toLocaleString()}</p>
                 <p className="text-[10px] text-text-muted mt-1">دينار عراقي</p>
               </div>
               <div className="bg-background p-4 rounded-xl border border-gray-50">
@@ -60,7 +59,7 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
                   <span className="material-symbols-outlined text-base">account_balance_wallet</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider">المتبقي</span>
                 </div>
-                <p className="text-lg font-bold text-text-main leading-none">٥٥,٠٠٠,٠٠٠</p>
+                <p className="text-lg font-bold text-text-main leading-none">{(totalPlanned - totalSpent).toLocaleString()}</p>
                 <p className="text-[10px] text-text-muted mt-1">دينار عراقي</p>
               </div>
             </div>
@@ -76,7 +75,7 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
         </div>
         
         <div className="space-y-4">
-          {STAGES.map((stage) => (
+          {stages.map((stage) => (
             <div 
               key={stage.id} 
               onClick={() => onNavigate(Screen.STAGE_DETAILS, { id: stage.id })}
@@ -101,9 +100,6 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
                         {stage.status === 'completed' ? 'مكتمل' : stage.status === 'in-progress' ? 'جاري العمل' : 'لم يبدأ'}
                       </span>
                     </div>
-                    <button className="text-gray-300">
-                      <span className="material-symbols-outlined">more_vert</span>
-                    </button>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mt-4">
