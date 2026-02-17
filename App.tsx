@@ -57,7 +57,7 @@ const App: React.FC = () => {
       ));
       
       const newTx: Transaction = {
-        id: Date.now().toString(),
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         title: data.material || data.notes || 'مصروف عام',
         amount: amount,
         date: formattedDate,
@@ -73,7 +73,7 @@ const App: React.FC = () => {
       setContractors(prev => prev.map(c => {
         if (c.id === data.contractorId) {
           const newPayment: Payment = {
-            id: Date.now().toString(),
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             title: data.notes || 'دفعة تعاقدية',
             date: formattedDate,
             amount: amount,
@@ -105,6 +105,8 @@ const App: React.FC = () => {
         return <StageDetailsScreen onNavigate={navigateTo} stage={stage} transactions={stageTx} />;
       case Screen.ADD_EXPENSE:
         return <AddExpenseScreen onNavigate={navigateTo} onSave={handleAddData} contractors={contractors} stages={stages} />;
+      case Screen.REPORTS:
+        return <ReportsScreen onNavigate={navigateTo} />;
       default:
         return <HomeScreen onNavigate={navigateTo} stages={stages} />;
     }

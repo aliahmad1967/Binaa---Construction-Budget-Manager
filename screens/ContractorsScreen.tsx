@@ -35,14 +35,14 @@ const ContractorsScreen: React.FC<Props> = ({ onNavigate, contractors }) => {
             <p className="text-[10px] text-text-muted font-bold uppercase mb-1">إجمالي المدفوع</p>
             <p className="text-xl font-black text-text-main leading-none">{(totalPaid/1000000).toFixed(1)}M <span className="text-xs font-medium text-text-muted">د.ع</span></p>
             <div className="w-full bg-gray-100 h-1.5 rounded-full mt-4 overflow-hidden">
-              <div className="bg-primary h-full rounded-full" style={{ width: `${(totalPaid/totalAgreed)*100}%` }}></div>
+              <div className="bg-primary h-full rounded-full" style={{ width: `${totalAgreed > 0 ? (totalPaid/totalAgreed)*100 : 0}%` }}></div>
             </div>
           </div>
           <div className="shrink-0 w-44 bg-white p-4 rounded-2xl shadow-sm border border-gray-50">
             <p className="text-[10px] text-text-muted font-bold uppercase mb-1">المتبقي للمقاولين</p>
             <p className="text-xl font-black text-text-main leading-none">{((totalAgreed-totalPaid)/1000000).toFixed(1)}M <span className="text-xs font-medium text-text-muted">د.ع</span></p>
             <div className="w-full bg-gray-100 h-1.5 rounded-full mt-4 overflow-hidden">
-              <div className="bg-orange-500 h-full rounded-full" style={{ width: `${((totalAgreed-totalPaid)/totalAgreed)*100}%` }}></div>
+              <div className="bg-orange-500 h-full rounded-full" style={{ width: `${totalAgreed > 0 ? ((totalAgreed-totalPaid)/totalAgreed)*100 : 0}%` }}></div>
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@ const ContractorsScreen: React.FC<Props> = ({ onNavigate, contractors }) => {
           <div className="space-y-4">
             {contractors.map((contractor) => {
               const isExpanded = expandedId === contractor.id;
-              const percentage = Math.min(100, (contractor.paidAmount / contractor.agreedAmount) * 100);
+              const percentage = contractor.agreedAmount > 0 ? Math.min(100, (contractor.paidAmount / contractor.agreedAmount) * 100) : 0;
               const remaining = contractor.agreedAmount - contractor.paidAmount;
 
               return (
